@@ -3,8 +3,8 @@
   "DBConfig":{
     "URL":"localhost:3306",
     "User":"root",
-    "Password":"123456",
-    "Scheme":"polyswap",
+    "Password":"Onchain@2019",
+    "Scheme":"price_notify",
     "Debug": true
   },
   "TokenBasics":[

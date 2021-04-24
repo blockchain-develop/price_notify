@@ -3,11 +3,11 @@
   "DBConfig":{
     "URL":"localhost:3306",
     "User":"root",
-    "Password":"123456",
+    "Password":"Onchain@2019",
     "Scheme":"price_notify",
     "Debug": false
   },
-  "CoinPriceUpdateSlot":5,
+  "CoinPriceUpdateSlot":1,
   "CoinPriceListenConfig":[
     {
       "MarketName":"binance",
@@ -18,5 +18,5 @@
       ]
     }
   ],
-  "PriceNotifySlot": 5
+  "PriceNotifySlot": 60
 }
