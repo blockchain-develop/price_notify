@@ -3,7 +3,7 @@
   "DBConfig":{
     "URL":"localhost:3306",
     "User":"root",
-    "Password":"Onchain@2019",
+    "Password":"root",
     "Scheme":"price_notify",
     "Debug": true
   },

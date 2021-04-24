@@ -35,7 +35,7 @@ var (
 	configPathFlag = cli.StringFlag{
 		Name:  "cliconfig",
 		Usage: "Server config file `<path>`",
-		Value: "./bridge_tools/conf/config_transactions.json",
+		Value: "./tools/conf/config_update.json",
 	}
 
 	logDirFlag = cli.StringFlag{
@@ -47,7 +47,7 @@ var (
 	cmdFlag = cli.UintFlag{
 		Name:  "cmd",
 		Usage: "which command? 1:init poly bridge 2:dump status 3:update token information 4:update bridge 5:update transactions",
-		Value: 2,
+		Value: 1,
 	}
 )
 
