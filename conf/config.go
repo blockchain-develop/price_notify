@@ -41,10 +41,16 @@ type CoinPriceListenConfig struct {
 	Nodes      []*Restful
 }
 
+type PriceNotifyConfig struct {
+	Node      *Restful
+}
+
 type Config struct {
 	Server string
 	CoinPriceUpdateSlot   int64
 	CoinPriceListenConfig []*CoinPriceListenConfig
+	PriceNotifySlot int64
+	PriceNotifyConfig *PriceNotifyConfig
 	DBConfig              *DBConfig
 }
 

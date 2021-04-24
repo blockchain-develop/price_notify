@@ -5,7 +5,7 @@
     "User":"root",
     "Password":"root",
     "Scheme":"price_notify",
-    "Debug": false
+    "Debug": true
   },
   "CoinPriceUpdateSlot":1,
   "CoinPriceListenConfig":[
@@ -18,5 +18,11 @@
       ]
     }
   ],
-  "PriceNotifySlot": 60
+  "PriceNotifySlot": 60,
+  "PriceNotifyConfig": {
+    "Node" : {
+      "Url": "https://oapi.dingtalk.com/",
+      "Key": "629e38cbcf27605eb3569ad5550008666151f17f64045ae20795bad17a2783b0"
+    }
+  }
 }

@@ -24,8 +24,8 @@ import (
 	"github.com/urfave/cli"
 	"os"
 	"os/signal"
-	"price_notify/coinpricelisten"
 	"price_notify/conf"
+	"price_notify/pricenotify"
 	"runtime"
 	"strings"
 	"syscall"
@@ -104,7 +104,7 @@ func startServer(ctx *cli.Context) {
 		conf, _ := json.Marshal(config)
 		logs.Info("%s\n", string(conf))
 	}
-	coinpricelisten.StartCoinPriceListen(config.Server, config.CoinPriceUpdateSlot, config.CoinPriceListenConfig, config.DBConfig)
+	pricenotify.StartPriceNotify(config.Server, config.PriceNotifySlot, config.PriceNotifyConfig, config.DBConfig)
 }
 
 func waitSignal() os.Signal {
@@ -125,7 +125,7 @@ func waitSignal() os.Signal {
 }
 
 func stopServer() {
-	coinpricelisten.StopCoinPriceListen()
+	pricenotify.StopPriceNotify()
 }
 
 func main() {
