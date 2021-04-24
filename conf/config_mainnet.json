@@ -1,0 +1,22 @@
+{
+  "Server":"price",
+  "DBConfig":{
+    "URL":"localhost:3306",
+    "User":"root",
+    "Password":"123456",
+    "Scheme":"price_notify",
+    "Debug": false
+  },
+  "CoinPriceUpdateSlot":5,
+  "CoinPriceListenConfig":[
+    {
+      "MarketName":"binance",
+      "Nodes": [
+        {
+          "Url": "https://api1.binance.com/"
+        }
+      ]
+    }
+  ],
+  "PriceNotifySlot": 5
+}

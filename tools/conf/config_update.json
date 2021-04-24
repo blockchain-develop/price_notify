@@ -1,0 +1,29 @@
+{
+  "Server":"price",
+  "DBConfig":{
+    "URL":"localhost:3306",
+    "User":"root",
+    "Password":"123456",
+    "Scheme":"polyswap",
+    "Debug": true
+  },
+  "TokenBasics":[
+    {
+      "Name":"BTC",
+      "Precision":9,
+      "Property":1,
+      "PriceMarkets":[
+        {
+          "MarketName":"binance",
+          "Name":"BTCUSDT"
+        }
+      ]
+    }
+  ],
+  "PriceNotifies": [
+    {
+      "TokenBasicName": "BTC",
+      "Price": 5000000000000
+    }
+  ]
+}
