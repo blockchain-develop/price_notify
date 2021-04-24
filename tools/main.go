@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"github.com/urfave/cli"
 	"os"
-	"price_notify/conf"
 	"runtime"
 	"strings"
 )
