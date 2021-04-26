@@ -38,6 +38,10 @@ func (dao *StakeDao) GetNotifies() ([]*models.PriceNotify, error) {
 	return nil, nil
 }
 
+func (dao *StakeDao) GetTokens() ([]*models.TokenBasic, error) {
+	return nil, nil
+}
+
 func (dao *StakeDao) Name() string {
 	return basedef.SERVER_STAKE
 }

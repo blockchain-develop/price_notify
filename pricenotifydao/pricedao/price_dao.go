@@ -18,6 +18,7 @@
 package pricedao
 
 import (
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -62,6 +63,18 @@ func (dao *PriceDao) GetNotifies() ([]*models.PriceNotify, error) {
 	priceNotifies := make([]*models.PriceNotify, 0)
 	dao.db.Preload("TokenBasic").Find(&priceNotifies)
 	return priceNotifies, nil
+}
+
+func (dao *PriceDao) GetTokens() ([]*models.TokenBasic, error) {
+	tokens := make([]*models.TokenBasic, 0)
+	res := dao.db.Preload("PriceMarkets").Find(&tokens)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+	if res.RowsAffected == 0 {
+		return nil, fmt.Errorf("no record!")
+	}
+	return tokens, nil
 }
 
 func (dao *PriceDao) Name() string {

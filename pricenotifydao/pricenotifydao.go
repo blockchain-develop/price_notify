@@ -28,6 +28,7 @@ import (
 type PriceNotifyDao interface {
 	AddNotifies([]*models.PriceNotify) error
 	GetNotifies() ([]*models.PriceNotify, error)
+	GetTokens() ([]*models.TokenBasic, error)
 	Name() string
 }
 
