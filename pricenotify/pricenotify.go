@@ -21,13 +21,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego/logs"
-	"io/ioutil"
-	"net/http"
+	"github.com/shopspring/decimal"
 	"price_notify/conf"
+	"price_notify/dingsdk"
 	"price_notify/models"
 	"price_notify/pricenotifydao"
 	"runtime/debug"
-	"strings"
 	"time"
 )
 
@@ -48,28 +47,29 @@ func StopPriceNotify() {
 	}
 }
 
-type Notify struct {
+type Trigger struct {
 	TokenName string
 	NotifyPrice int64
 	CurrentPrice int64
-	Ind int64
 }
 
 type PriceNotify struct {
 	PriceNotifySlot int64
 	Cfg *conf.PriceNotifyConfig
-	Notifies        map[string]*Notify
+	triggers        map[string]*Trigger
 	exit            chan bool
 	db              pricenotifydao.PriceNotifyDao
+	dingSdk         *dingsdk.DingSdk
 }
 
 func NewPriceNotify(priceNotifySlot int64, priceNotifyCfg *conf.PriceNotifyConfig, db pricenotifydao.PriceNotifyDao) *PriceNotify {
 	priceNotify := &PriceNotify{}
 	priceNotify.PriceNotifySlot = priceNotifySlot
 	priceNotify.Cfg = priceNotifyCfg
-	priceNotify.Notifies = make(map[string]*Notify, 0)
+	priceNotify.triggers = make(map[string]*Trigger, 0)
 	priceNotify.db = db
 	priceNotify.exit = make(chan bool, 0)
+	priceNotify.dingSdk = dingsdk.NewDingSdk(priceNotifyCfg.Node.Url, priceNotifyCfg.Node.Key)
 	//
 	notifies, err := db.GetNotifies()
 	if err != nil {
@@ -140,28 +140,21 @@ func (cpl *PriceNotify) priceNotify() (exit bool) {
 	}
 }
 
-func (cpl *PriceNotify) findNotifies(priceNotifies []*models.PriceNotify) (map[string]*Notify, error) {
-	notifies := make(map[string]*Notify, 0)
+func (cpl *PriceNotify) findNotifies(priceNotifies []*models.PriceNotify) (map[string]*Trigger, error) {
+	triggers := make(map[string]*Trigger, 0)
 	for _, priceNotify := range priceNotifies {
 		tokenPrice := priceNotify.TokenBasic.Price
-		notify, ok := notifies[priceNotify.TokenBasicName]
+		trigger, ok := triggers[priceNotify.TokenBasicName]
 		if !ok {
-			notify := &Notify{
+			trigger = &Trigger{
 				TokenName:   priceNotify.TokenBasicName,
 				NotifyPrice: priceNotify.Price,
 				CurrentPrice: tokenPrice,
 			}
-			notifies[priceNotify.TokenBasicName] = notify
-			if notify.NotifyPrice > tokenPrice {
-				notify.NotifyPrice -= 1
-				notify.Ind = -1
-			} else {
-				notify.NotifyPrice += 1
-				notify.Ind = 1
-			}
+			triggers[priceNotify.TokenBasicName] = trigger
 		} else {
 			newDiff := priceNotify.Price - tokenPrice
-			oldDiff := notify.NotifyPrice - tokenPrice
+			oldDiff := trigger.NotifyPrice - tokenPrice
 			if newDiff < 0 {
 				newDiff = 0 - newDiff
 			}
@@ -169,19 +162,12 @@ func (cpl *PriceNotify) findNotifies(priceNotifies []*models.PriceNotify) (map[s
 				oldDiff = 0 - oldDiff
 			}
 			if newDiff < oldDiff {
-				notify.NotifyPrice = priceNotify.Price
-				notify.CurrentPrice = tokenPrice
-				if notify.NotifyPrice > tokenPrice {
-					notify.NotifyPrice -= 1
-					notify.Ind = -1
-				} else {
-					notify.NotifyPrice += 1
-					notify.Ind = 1
-				}
+				trigger.NotifyPrice = priceNotify.Price
+				trigger.CurrentPrice = tokenPrice
 			}
 		}
 	}
-	return notifies, nil
+	return triggers, nil
 }
 
 func (cpl *PriceNotify) initNotifies(priceNotifies []*models.PriceNotify) error {
@@ -193,9 +179,9 @@ func (cpl *PriceNotify) initNotifies(priceNotifies []*models.PriceNotify) error 
 		cpl.notify(notify)
 	}
 	for _, notify := range notifies {
-		precent, _ := cpl.pricePercent(notify.CurrentPrice, notify.NotifyPrice)
-		if precent < 10 {
-			cpl.Notifies[notify.TokenName] = notify
+		percent, _ := cpl.pricePercent(notify.CurrentPrice, notify.NotifyPrice)
+		if percent < 10 {
+			cpl.triggers[notify.TokenName] = notify
 		}
 	}
 	return nil
@@ -206,20 +192,38 @@ func (cpl *PriceNotify) checkNotifies(priceNotifies []*models.PriceNotify) error
 	if err != nil {
 		return err
 	}
-	newNotifies := make([]*Notify, 0)
+	newNotifies := make([]*Trigger, 0)
 	for _, notify := range notifies {
-		percent, _ := cpl.pricePercent(notify.CurrentPrice, notify.NotifyPrice)
-		if percent > 10 {
-			_, ok := cpl.Notifies[notify.TokenName]
+		{
+			oldNotify, ok := cpl.triggers[notify.TokenName]
 			if ok {
-				delete(cpl.Notifies, notify.TokenName)
+				if oldNotify.NotifyPrice != notify.NotifyPrice {
+					newNotifies = append(newNotifies, notify)
+					cpl.triggers[notify.TokenName] = notify
+				}
 			}
 		}
-		if percent < 2 {
-			_, ok := cpl.Notifies[notify.TokenName]
+		percent, _ := cpl.pricePercent(notify.CurrentPrice, notify.NotifyPrice)
+		if percent > 10 {
+			_, ok := cpl.triggers[notify.TokenName]
+			if ok {
+				newNotifies = append(newNotifies, notify)
+				delete(cpl.triggers, notify.TokenName)
+				/*
+				if (oldNotify.CurrentPrice - oldNotify.NotifyPrice) * (notify.CurrentPrice - notify.NotifyPrice) < 0 {
+					delete(cpl.triggers, notify.TokenName)
+				} else {
+					newNotifies = append(newNotifies, notify)
+					delete(cpl.triggers, notify.TokenName)
+				}
+				*/
+			}
+		}
+		if percent < 1 {
+			_, ok := cpl.triggers[notify.TokenName]
 			if !ok {
 				newNotifies = append(newNotifies, notify)
-				cpl.Notifies[notify.TokenName] = notify
+				cpl.triggers[notify.TokenName] = notify
 			}
 			/*
 			if ok && notify.Ind != oldNotify.Ind {
@@ -228,6 +232,9 @@ func (cpl *PriceNotify) checkNotifies(priceNotifies []*models.PriceNotify) error
 			}
 			*/
 		}
+	}
+	for _, notify := range newNotifies {
+		cpl.notify(notify)
 	}
 	return nil
 }
@@ -245,65 +252,41 @@ func (cpl *PriceNotify) pricePercent(price int64, base int64) (int64, int64) {
 	return percent, ind
 }
 
-type DingContent struct {
-	Content string `json:"content"`
-}
-type DingAt struct {
-	IsAtAll bool `json:"isAtAll"`
-}
-type DingNotify struct {
-	MsgType string `json:"msgtype"`
-	Text DingContent `json:"text"`
-	At DingAt `json:"at"`
-}
-
-type DingResult struct {
-	ErrCode int64 `json:"errcode"`
-	ErrMsg string `json:"errmsg"`
-}
-
-func (cpl *PriceNotify) notify(notify *Notify) error {
-	tag := "above"
-	if notify.Ind == -1 {
-		tag = "below"
+func (cpl *PriceNotify) notify(notify *Trigger) error {
+	tag := "up"
+	percent, _ := cpl.pricePercent(notify.CurrentPrice, notify.NotifyPrice)
+	if percent < 1 {
+		if notify.CurrentPrice - notify.NotifyPrice > 0 {
+			tag = "down"
+		}
+	} else {
+		if notify.CurrentPrice - notify.NotifyPrice < 0 {
+			tag = "down"
+		}
 	}
-	dingText := fmt.Sprintf("%s price is %s %d", notify.TokenName, tag, notify.NotifyPrice / 100000000)
-	dingNotify := &DingNotify{
+	price := decimal.NewFromInt(notify.CurrentPrice)
+	newPrice := price.Div(decimal.NewFromInt(100000000))
+	dingText := fmt.Sprintf("%s price is %s to %s", notify.TokenName, tag, newPrice.String())
+	dingNotify := &dingsdk.DingNotify{
 		MsgType: "text",
-		Text:    DingContent{
+		Text:    dingsdk.DingContent{
 			Content : dingText,
 		},
-		At:      DingAt{
+		At:      dingsdk.DingAt{
 			IsAtAll: true,
 		},
 	}
-	url := cpl.Cfg.Node.Url+"robot/send?access_token="+cpl.Cfg.Node.Key
-	requestJson, _ := json.Marshal(dingNotify)
-	req, err := http.NewRequest("POST", url, strings.NewReader(string(requestJson)))
+	if cpl.Cfg.Switch == false {
+		notifyJson, _ := json.Marshal(dingNotify)
+		logs.Info("ding notify: %s", string(notifyJson))
+		return nil
+	}
+	result, err := cpl.dingSdk.Notify(dingNotify)
 	if err != nil {
 		return err
 	}
-
-	req.Header.Set("Accepts", "application/json")
-	req.Header.Set("Content-Type", "application/json")
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("response status code: %d", resp.StatusCode)
-	}
-	respBody, _ := ioutil.ReadAll(resp.Body)
-	dingResult := new(DingResult)
-	err = json.Unmarshal(respBody, dingResult)
-	if err != nil {
-		return err
-	}
-	if dingResult.ErrCode != 0 || dingResult.ErrMsg != "ok" {
-		return fmt.Errorf("code: %d, err: %s", dingResult.ErrCode, dingResult.ErrMsg)
+	if result.ErrCode != 0 {
+		return fmt.Errorf("code: %d, err: %s", result.ErrCode, result.ErrMsg)
 	}
 	return nil
 }

@@ -3,7 +3,7 @@
   "DBConfig":{
     "URL":"localhost:3306",
     "User":"root",
-    "Password":"root",
+    "Password":"Onchain@2019",
     "Scheme":"price_notify",
     "Debug": true
   },
@@ -20,6 +20,7 @@
   ],
   "PriceNotifySlot": 60,
   "PriceNotifyConfig": {
+    "Switch": true,
     "Node" : {
       "Url": "https://oapi.dingtalk.com/",
       "Key": "629e38cbcf27605eb3569ad5550008666151f17f64045ae20795bad17a2783b0"

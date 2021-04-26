@@ -43,6 +43,11 @@ func startUpdate(cfg *UpdateConfig) {
 	}
 	//
 	{
+		db.Where("1 = 1").Delete(&models.PriceMarket{})
+		db.Where("1 = 1").Delete(&models.PriceNotify{})
+		db.Where("1 = 1").Delete(&models.TokenBasic{})
+	}
+	{
 		dao := coinpricedao.NewCoinPriceDao(cfg.Server, cfg.DBConfig)
 		if dao == nil {
 			panic("server is invalid")

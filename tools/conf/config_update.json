@@ -3,7 +3,7 @@
   "DBConfig":{
     "URL":"localhost:3306",
     "User":"root",
-    "Password":"root",
+    "Password":"Onchain@2019",
     "Scheme":"price_notify",
     "Debug": true
   },
@@ -16,6 +16,50 @@
         {
           "MarketName":"binance",
           "Name":"BTCUSDT"
+        }
+      ]
+    },
+    {
+      "Name":"ETH",
+      "Precision":9,
+      "Property":1,
+      "PriceMarkets":[
+        {
+          "MarketName":"binance",
+          "Name":"ETHUSDT"
+        }
+      ]
+    },
+    {
+      "Name":"DOT",
+      "Precision":9,
+      "Property":1,
+      "PriceMarkets":[
+        {
+          "MarketName":"binance",
+          "Name":"DOTUSDT"
+        }
+      ]
+    },
+    {
+      "Name":"DOGE",
+      "Precision":9,
+      "Property":1,
+      "PriceMarkets":[
+        {
+          "MarketName":"binance",
+          "Name":"DOGEUSDT"
+        }
+      ]
+    },
+    {
+      "Name":"UNI",
+      "Precision":9,
+      "Property":1,
+      "PriceMarkets":[
+        {
+          "MarketName":"binance",
+          "Name":"UNIUSDT"
         }
       ]
     }
@@ -39,6 +83,42 @@
     },
     {
       "TokenBasicName": "BTC",
+      "Price": 5400000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 5500000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 5600000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 5700000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 5800000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 5900000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 6000000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 6100000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 6200000000000
+    },
+    {
+      "TokenBasicName": "BTC",
       "Price": 4900000000000
     },
     {
@@ -48,6 +128,270 @@
     {
       "TokenBasicName": "BTC",
       "Price": 4700000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 4600000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 4500000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 4400000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 4300000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 4200000000000
+    },
+    {
+      "TokenBasicName": "BTC",
+      "Price": 4100000000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 4200000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 4100000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 4000000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3900000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3800000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3700000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3600000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3500000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3400000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3300000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3200000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3100000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 3000000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 2900000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 2800000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 2700000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 2600000000
+    },
+    {
+      "TokenBasicName": "DOT",
+      "Price": 2500000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 280000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 270000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 260000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 250000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 240000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 230000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 220000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 210000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 200000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 190000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 180000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 170000000000
+    },
+    {
+      "TokenBasicName": "ETH",
+      "Price": 160000000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 55000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 50000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 45000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 40000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 35000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 30000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 25000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 20000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 15000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 10000000
+    },
+    {
+      "TokenBasicName": "DOGE",
+      "Price": 5000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 4200000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 4100000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 4000000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3900000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3800000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3700000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3600000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3500000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3400000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3300000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3200000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3100000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 3000000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 2900000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 2800000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 2700000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 2600000000
+    },
+    {
+      "TokenBasicName": "UNI",
+      "Price": 2500000000
     }
   ]
 }

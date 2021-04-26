@@ -42,6 +42,7 @@ type CoinPriceListenConfig struct {
 }
 
 type PriceNotifyConfig struct {
+	Switch bool
 	Node      *Restful
 }
 
