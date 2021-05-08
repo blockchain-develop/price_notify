@@ -112,15 +112,10 @@ func (cpl *PriceNotify) priceNotify() (exit bool) {
 	}()
 
 	logs.Debug("price notify, dao: %s......", cpl.db.Name())
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(time.Second * time.Duration(cpl.priceNotifySlot))
 	for {
 		select {
 		case <-ticker.C:
-			now := time.Now().Unix()
-			if now%cpl.priceNotifySlot != 0 {
-				continue
-			}
-
 			logs.Info("do price notify at time: %s", time.Now().Format("2006-01-02 15:04:05"))
 			tokens, err := cpl.db.GetTokens()
 			if err != nil {

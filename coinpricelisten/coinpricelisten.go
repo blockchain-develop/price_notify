@@ -137,36 +137,27 @@ func (cpl *CoinPriceListen) listenPrice() (exit bool) {
 	}()
 
 	logs.Debug("coin price listen, market: %s, dao: %s......", cpl.GetPriceMarket(), cpl.db.Name())
-	ticker := time.NewTicker(time.Minute)
+	ticker := time.NewTicker(time.Second * time.Duration(cpl.priceUpdateSlot))
 	for {
 		select {
 		case <-ticker.C:
-			now := time.Now().Unix() / 60
-			if now%cpl.priceUpdateSlot != 0 {
+			logs.Info("do price update at time: %s", time.Now().Format("2006-01-02 15:04:05"))
+			tokenBasics, err := cpl.db.GetTokens()
+			if err != nil {
+				logs.Error("get token basic err: %v", err)
 				continue
 			}
-			counter := 0
-			for counter < 5 {
-				logs.Info("do price update at time: %s", time.Now().Format("2006-01-02 15:04:05"))
-				time.Sleep(time.Second * 5)
-				counter++
-				tokenBasics, err := cpl.db.GetTokens()
-				if err != nil {
-					logs.Error("get token basic err: %v", err)
-					continue
-				}
-				err = cpl.updateCoinPrice(tokenBasics)
-				if err != nil {
-					logs.Error("updateCoinPrice err: %v", err)
-					continue
-				}
-				err = cpl.db.SavePrices(tokenBasics)
-				if err != nil {
-					logs.Error("save price err: %v", err)
-					continue
-				}
-				break
+			err = cpl.updateCoinPrice(tokenBasics)
+			if err != nil {
+				logs.Error("updateCoinPrice err: %v", err)
+				continue
 			}
+			err = cpl.db.SavePrices(tokenBasics)
+			if err != nil {
+				logs.Error("save price err: %v", err)
+				continue
+			}
+			break
 		case <-cpl.exit:
 			logs.Info("coin price listen exit, market: %s, dao: %s......", cpl.GetPriceMarket(), cpl.db.Name())
 			return true
